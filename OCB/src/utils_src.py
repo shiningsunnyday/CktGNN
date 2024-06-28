@@ -11,6 +11,8 @@ import pickle
 import gzip
 from shutil import copy
 from copy import deepcopy
+import os
+import pygraphviz as pgv
 
 SUBG_INDI = {0: [],
  1: [],
@@ -197,20 +199,23 @@ def r_c_gm_extractor(g, subg_indi = SUBG_INDI):
     return g
 
 '''Network visualization'''
-def plot_circuits(g_pair, res_dir, name, backbone=False, data_type='igraph', pdf=False):
+def plot_circuits(g_pair, res_dir, name, backbone=False, data_type='igraph', pdf=False, title=""):
     # backbone: puts all nodes in a straight line
     file_name = os.path.join(res_dir, name+'.png')
     if pdf:
         file_name = os.path.join(res_dir, name+'.pdf')
     if data_type == 'igraph':
-        draw_subg_ckt(g_pair[0], file_name, backbone)
+        draw_subg_ckt(g_pair[0], file_name, backbone, title=title)
     elif data_type == 'pygraph':
-        draw_ckt(g_pair[1], file_name)
+        draw_ckt(g_pair[1], file_name, title=title)
     return file_name
 
 
-def draw_subg_ckt(g, path, backbone=False):
-    graph = pgv.AGraph(directed=True, strict=True, fontname='Helvetica', arrowtype='open')
+def draw_subg_ckt(g, path, backbone=False, title=''):
+    graph = pgv.AGraph(directed=True, strict=True, fontname='Helvetica', arrowtype='open')    
+    if title:
+        graph.graph_attr["label"] = title
+    graph.graph_attr["fontsize"] = 50
     if g is None:
         add_subg_node(graph, 0, 0)
         graph.layout(prog='dot')
@@ -310,14 +315,17 @@ def add_subg_node(graph, node_id, label, shape='box', style='filled'):
     else:
         label = ''
         color = 'aliceblue'
-    #label = f"{label}\n({node_id})"
-    label = f"{label}"
+    label = f"({node_id}) {label}"
+    # label = f"{label}"
     graph.add_node(
             node_id, label=label, color='black', fillcolor=color,
             shape=shape, style=style, fontsize=24)
 
-def draw_ckt(g, path, backbone=False):
+def draw_ckt(g, path, backbone=False, title=''):
     graph = pgv.AGraph(directed=True, strict=True, fontname='Helvetica', arrowtype='open')
+    if title:
+        graph.graph_attr["label"] = title
+    graph.graph_attr["fontsize"] = 50    
     if g is None:
         add_node(graph, 0, 0)
         graph.layout(prog='dot')
@@ -369,8 +377,8 @@ def add_node(graph, node_id, label, shape='box', style='filled'):
     else:
         label = ''
         color = 'aliceblue'
-    #label = f"{label}\n({node_id})"
-    label = f"{label}"
+    label = f"({node_id}) {label}"
+    # label = f"{label}"    
     graph.add_node(
             node_id, label=label, color='black', fillcolor=color,
             shape=shape, style=style, fontsize=24)

@@ -25,6 +25,9 @@ from layers.models_ig import CktGNN, DVAE
 from layers.dagnn_pyg import DAGNN
 from layers.constants import *
 import time
+from OCB.src.utils_src import plot_circuits
+import json
+from networkx.readwrite import json_graph
 
 parser = argparse.ArgumentParser(description='VAE experiments on Ckt-Bench-101')
 # general settings
@@ -124,6 +127,34 @@ pkl_name = os.path.join(args.data_dir, data_name + '.pkl')
 with open(pkl_name, 'rb') as f:
     all_datasets =  pickle.load(f)
 train_dataset = all_datasets[0]
+
+save_dir = '/Users/msun415/Documents/GitHub/CktGNN/visualizations/'
+combined_graph = nx.Graph()
+perform = pd.read_csv('/Users/msun415/Documents/GitHub/CktGNN/OCB/CktBench101/perform101.csv', index_col=0)
+
+
+def process(i):
+    g = train_dataset[i][1]
+    g_nx = g.to_networkx()
+    g_nx.graph['index'] = i
+    for key in perform.columns:
+        g_nx.graph[key] = perform.iloc[i][key]
+    # for n in g_nx.nodes:
+    #     for attr, val in g_nx.nodes[n].items():
+    #         if isinstance(val, list):
+    #             val = tuple(val)
+    #             g_nx.nodes[n][attr] = val
+    data = json_graph.node_link_data(g_nx)
+    json.dump(data, open(os.path.join(save_dir, f'{i}.json'), 'w+'))
+    plot_circuits(train_dataset[i], save_dir, f'{i}', data_type='pygraph', title=f'Graph #{i}')    
+
+
+import multiprocessing as mp
+mp.set_start_method('fork')
+
+with mp.Pool(50) as p:
+    p.map(process, tqdm(range(len(train_dataset))))
+
 test_dataset = all_datasets[1]
 breakpoint()
 if args.model.startswith('CktGNN'):
