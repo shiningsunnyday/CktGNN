@@ -2,7 +2,17 @@ import numpy as np
 import os
 import copy
 import csv
+<<<<<<< HEAD
 import argparse
+=======
+from pathlib import Path
+
+def get_next(dirname):
+    for f in os.listdir(dirname):
+        if f.endswith('.ckt'):
+            s = Path(f).stem
+            breakpoint()
+>>>>>>> 2669b28 (minor)
 
 
 def cktgraph_to_fom(cktgrpah_path):
@@ -555,10 +565,10 @@ def cktgraph_to_fom(cktgrpah_path):
 
 
             ##### starting converting netlist #####
-
+            dirname = '/Users/msun415/Documents/GitHub/CktGNN/OCB/src/simulator/netlists'
             print('\n')
-
-            file1 = open(f'{os.path.dirname(os.path.abspath(__file__))}/netlist', 'w')
+            version = get_next(dirname)
+            file1 = open(f'{dirname}/{version}.ckt', 'w')
             #print('\n')
             file1.writelines('\n') 
             file1.writelines('// Library name: GNN_Circuit \n') 

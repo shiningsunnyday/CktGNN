@@ -159,8 +159,10 @@ def is_valid_DAG(g, subg=True):
         elif v['type'] == END_TYPE:
             n_end += 1
         if v.outdegree() == 0 and v['type'] != END_TYPE:
+            breakpoint()
             return False
-    return res and n_start == 1 and n_end == 1
+    ans = res and n_start == 1 and n_end == 1
+    return ans
 
 def is_valid_Circuit(g, subg=True):
     # Check if the given igraph g is a amp circuits
