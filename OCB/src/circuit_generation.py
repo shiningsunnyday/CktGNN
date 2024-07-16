@@ -142,6 +142,7 @@ if args.node_feat == 'discrete':
     if os.path.isfile(txt_name1):
         pass
     else:
+        breakpoint()
         circuit_generation_dis(args.ng, SUBG_NODE, SUBG_CON, NODE_TYPE, start_type=2, end_type=26, dataset=txt_name1)
 else:
     if os.path.isfile(txt_name2):

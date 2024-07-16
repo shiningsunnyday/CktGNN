@@ -315,6 +315,7 @@ for rand_idx in range(1,10):
     
      model.to(device)
      load_module_state(model, os.path.join(args.res_dir, 'model_checkpoint{}.pth'.format(args.checkpoint)), device=device)
+     breakpoint()
      X_train, Y_train, Gain_train, BW_train, PM_train = extract_latent(train_data, perform_df, 0)
      X_test, Y_test, Gain_test, BW_test, PM_test = extract_latent(test_data, perform_df, 9000)
 

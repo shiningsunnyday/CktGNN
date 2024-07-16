@@ -2,6 +2,7 @@ import numpy as np
 import os
 import copy
 import csv
+import argparse
 
 
 def cktgraph_to_fom(cktgrpah_path):
@@ -557,7 +558,7 @@ def cktgraph_to_fom(cktgrpah_path):
 
             print('\n')
 
-            file1 = open('/home/research/WG-caow/simulation/test/spectre/schematic/netlist/netlist', 'w')
+            file1 = open(f'{os.path.dirname(os.path.abspath(__file__))}/netlist', 'w')
             #print('\n')
             file1.writelines('\n') 
             file1.writelines('// Library name: GNN_Circuit \n') 
@@ -681,5 +682,9 @@ def cktgraph_to_fom(cktgrpah_path):
     return fom
 
 
-
-
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--fname")
+    args = parser.parse_args()
+    breakpoint()
+    cktgraph_to_fom(args.fname)

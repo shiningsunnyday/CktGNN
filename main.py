@@ -125,7 +125,7 @@ with open(pkl_name, 'rb') as f:
     all_datasets =  pickle.load(f)
 train_dataset = all_datasets[0]
 test_dataset = all_datasets[1]
-
+breakpoint()
 if args.model.startswith('CktGNN'):
     train_data = [train_dataset[i][0] for i in range(len(train_dataset))]
     test_data = [test_dataset[i][0] for i in range(len(test_dataset))]
@@ -353,7 +353,8 @@ for epoch in range(start_epoch + 1, args.epochs + 1):
         
 
 '''Testing begins here'''
-Nll, acc = test()
+# Nll, acc = test()
+breakpoint()
 r_valid_dag, r_valid_ckt, r_novel = prior_validity(train_data, model, infer_batch_size=args.infer_batch_size, 
     data_type=data_type,  subg=subg, device=device, scale_to_train_range=True)
 
