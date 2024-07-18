@@ -2,20 +2,25 @@ import numpy as np
 import os
 import copy
 import csv
-<<<<<<< HEAD
-import argparse
-=======
 from pathlib import Path
+import argparse
+import ahkab
+import matplotlib.pyplot as plt
+plt.style.use('seaborn-deep')
+import pandas as pd
+from ahkab import circuit, printing, time_functions, netlist_parser
 
 def get_next(dirname):
+    ind = 0
     for f in os.listdir(dirname):
         if f.endswith('.ckt'):
-            s = Path(f).stem
-            breakpoint()
->>>>>>> 2669b28 (minor)
+            i = int(Path(f).stem)
+            ind = max(ind, i)
+    return ind+1
 
 
 def cktgraph_to_fom(cktgrpah_path):
+    foms = []
 
     subg_node = {
         
@@ -110,10 +115,10 @@ def cktgraph_to_fom(cktgrpah_path):
     unit_node = {
         0: None,
         1: None,
-        2: ['M'],
+        2: ['MEG'],
         3: ['f'],
-        4: ['M', 'f'],
-        5: ['M', 'f'],
+        4: ['MEG', 'f'],
+        5: ['MEG', 'f'],
         6: ['m'],
         7: ['m'],
         8: ['m'],
@@ -122,18 +127,18 @@ def cktgraph_to_fom(cktgrpah_path):
         11: ['f', 'm'],
         12: ['f', 'm'],
         13: ['f', 'm'],
-        14: ['M', 'm'],
-        15: ['M', 'm'],
-        16: ['M', 'm'],
-        17: ['M', 'm'],
-        18: ['f', 'M', 'm'],
-        19: ['f', 'M', 'm'],
-        20: ['f', 'M', 'm'],
-        21: ['f', 'M', 'm'],
-        22: ['f', 'M', 'm'],
-        23: ['f', 'M', 'm'],
-        24: ['f', 'M', 'm'],
-        25: ['f', 'M', 'm']
+        14: ['MEG', 'm'],
+        15: ['MEG', 'm'],
+        16: ['MEG', 'm'],
+        17: ['MEG', 'm'],
+        18: ['f', 'MEG', 'm'],
+        19: ['f', 'MEG', 'm'],
+        20: ['f', 'MEG', 'm'],
+        21: ['f', 'MEG', 'm'],
+        22: ['f', 'MEG', 'm'],
+        23: ['f', 'MEG', 'm'],
+        24: ['f', 'MEG', 'm'],
+        25: ['f', 'MEG', 'm']
     }
 
 
@@ -175,88 +180,88 @@ def cktgraph_to_fom(cktgrpah_path):
 
     subnetlist_node = {0: None,
         1: None,
-        2: ["subckt single_r_2 IN OUT \n", "    R0 (IN OUT) resistor r=? \n", "ends single_r_2 \n"],
-        3: ["subckt single_c_3 IN OUT \n", "    C0 (IN OUT) capacitor c=? \n", "ends single_c_3 \n"],
-        4: ["subckt r_c_s_4 IN OUT \n", "    R0 (IN net1) resistor r=? \n", 
-        "  C0 (net1 OUT) capacitor c=? \n", "ends r_c_s_4 \n"],
-        5: ["subckt r_c_p_5 IN OUT \n", "    R0 (IN OUT) resistor r=? \n", 
-        "  C0 (IN OUT) capacitor c=? \n", "ends r_c_p_5 \n"],
-        6: ["subckt tc_stage_6 GND OUT IN \n", "    G0 (OUT GND IN GND) vccs gm=? \n", 
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n", 
-        "ends tc_stage_6 \n"],
-        7: ["subckt tc_stage_7 GND OUT IN \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n",
-        "ends tc_stage_7 \n"],
-        8: ["subckt tc_stage_8 GND OUT IN \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n",
-        "ends tc_stage_8 \n"],
-        9: ["subckt tc_stage_9 GND OUT IN \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n",
-        "ends tc_stage_9 \n"],
-        10: ["subckt ts_c_p_10 GND IN OUT \n", "    C1 (IN OUT) capacitor c=? \n", 
-        "    G0 (OUT GND IN GND) vccs gm=? \n", "    R0 (OUT GND) resistor r=1M \n", 
-        "    C0 (OUT GND) capacitor c=50.0f \n",     
-        "ends ts_c_p_10 \n"],
-        11: ["subckt ts_c_p_11 GND IN OUT \n", "    C1 (IN OUT) capacitor c=? \n",
-        "    G0 (OUT GND IN GND) vccs gm=? \n", "    R0 (OUT GND) resistor r=1M \n", 
-        "    C0 (OUT GND) capacitor c=50.0f \n",  
-        "ends ts_c_p_11 \n"],
-        12: ["subckt ts_c_p_12 GND IN OUT \n", "    C1 (IN OUT) capacitor c=? \n", 
-        "    G0 (OUT GND IN GND) vccs gm=? \n", "    R0 (OUT GND) resistor r=1M \n",
-        "    C0 (OUT GND) capacitor c=50.0f \n",
-        "ends ts_c_p_12 \n"],
-        13: ["subckt ts_c_p_13 GND IN OUT \n", "    C1 (IN OUT) capacitor c=? \n", 
-        "    G0 (OUT GND IN GND) vccs gm=? \n", "    R0 (OUT GND) resistor r=1M \n", 
-        "    C0 (OUT GND) capacitor c=50.0f \n",     
-        "ends ts_c_p_13 \n"],
-        14: ["subckt ts_r_p_14 GND IN OUT \n", "    R1 (IN OUT) resistor r=? \n", 
-        "    G0 (OUT GND IN GND) vccs gm=? \n", "    R0 (OUT GND) resistor r=1M \n",
-        "    C0 (OUT GND) capacitor c=50.0f \n",
-        "ends ts_r_p_14 \n"],
-        15: ["subckt ts_r_p_15 GND IN OUT \n", "    R1 (IN OUT) resistor r=? \n", 
-        "    G0 (OUT GND IN GND) vccs gm=? \n", "    R0 (OUT GND) resistor r=1M \n", 
-        "    C0 (OUT GND) capacitor c=50.0f \n",     
-        "ends ts_r_p_15 \n"],
-        16: ["subckt ts_r_p_16 GND IN OUT \n", "    R1 (IN OUT) resistor r=? \n", 
-        "    G0 (OUT GND IN GND) vccs gm=? \n", "    R0 (OUT GND) resistor r=1M \n",
-        "    C0 (OUT GND) capacitor c=50.0f \n",     
-        "ends ts_r_p_16 \n"],
-        17: ["subckt ts_r_p_17 GND IN OUT \n", "    R1 (IN OUT) resistor r=? \n", 
-        "    G0 (OUT GND IN GND) vccs gm=? \n", "    R0 (OUT GND) resistor r=1M \n", 
-        "    C0 (OUT GND) capacitor c=50.0f \n",     
-        "ends ts_r_p_17 \n"],
-        18: ["subckt ts_r_c_p_18 GND IN OUT \n", "    C1 (IN OUT) capacitor c=? \n",
-        "    R1 (IN OUT) resistor r=? \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n", 
-        "ends ts_r_c_p_18 \n"],
-        19: ["subckt ts_r_c_p_19 GND IN OUT \n", "    C1 (IN OUT) capacitor c=? \n",
-        "    R1 (IN OUT) resistor r=? \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n", 
-        "ends ts_r_c_p_19 \n"],
-        20: ["subckt ts_r_c_p_20 GND IN OUT \n", "    C1 (IN OUT) capacitor c=? \n",
-        "    R1 (IN OUT) resistor r=? \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n", 
-        "ends ts_r_c_p_20 \n"],
-        21: ["subckt ts_r_c_p_21 GND IN OUT \n", "    C1 (IN OUT) capacitor c=? \n",
-        "    R1 (IN OUT) resistor r=? \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n", 
-        "ends ts_r_c_p_21 \n"],
-        22: ["subckt ts_r_c_s_22 GND IN OUT \n", "    C1 (net1 OUT) capacitor c=? \n",
-        "    R1 (IN net1) resistor r=? \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n",  
-        "ends ts_r_c_s_22 \n"],
-        23: ["subckt ts_r_c_s_23 GND IN OUT \n", "  C1 (net1 OUT) capacitor c=? \n",
-        "  R1 (IN net1) resistor r=? \n", "  G0 (OUT GND IN GND) vccs gm=? \n",
-        "  R0 (OUT GND) resistor r=1M \n", "  C0 (OUT GND) capacitor c=50.0f \n",  
-        "ends ts_r_c_s_23 \n"],
-        24: ["subckt ts_r_c_s_24 GND IN OUT \n", "    C1 (net1 OUT) capacitor c=? \n",
-        "    R1 (IN net1) resistor r=? \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n",  
-        "ends ts_r_c_s_24 \n"],
-        25: ["subckt ts_r_c_s_25 GND IN OUT \n", "    C1 (net1 OUT) capacitor c=? \n",
-        "    R1 (IN net1) resistor r=? \n", "    G0 (OUT GND IN GND) vccs gm=? \n",
-        "    R0 (OUT GND) resistor r=1M \n", "    C0 (OUT GND) capacitor c=50.0f \n",  
-        "ends ts_r_c_s_25 \n"]
+        2: [".subckt single_r_2 IN OUT \n", "    R0 IN OUT ? \n", ".ends single_r_2 \n"],
+        3: [".subckt single_c_3 IN OUT \n", "    C0 IN OUT ? \n", ".ends single_c_3 \n"],
+        4: [".subckt r_c_s_4 IN OUT \n", "    R0 IN net1 ? \n", 
+        "  C0 net1 OUT ? \n", ".ends r_c_s_4 \n"],
+        5: [".subckt r_c_p_5 IN OUT \n", "    R0 IN OUT ? \n", 
+        "  C0 IN OUT ? \n", ".ends r_c_p_5 \n"],
+        6: [".subckt tc_stage_6 GND OUT IN \n", "    G0 OUT GND IN GND ? \n", 
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n", 
+        ".ends tc_stage_6 \n"],
+        7: [".subckt tc_stage_7 GND OUT IN \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n",
+        ".ends tc_stage_7 \n"],
+        8: [".subckt tc_stage_8 GND OUT IN \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n",
+        ".ends tc_stage_8 \n"],
+        9: [".subckt tc_stage_9 GND OUT IN \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n",
+        ".ends tc_stage_9 \n"],
+        10: [".subckt ts_c_p_10 GND IN OUT \n", "    C1 IN OUT ? \n", 
+        "    G0 OUT GND IN GND ? \n", "    R0 OUT GND 1MEG \n", 
+        "    C0 OUT GND 50.0f \n",     
+        ".ends ts_c_p_10 \n"],
+        11: [".subckt ts_c_p_11 GND IN OUT \n", "    C1 IN OUT ? \n",
+        "    G0 OUT GND IN GND ? \n", "    R0 OUT GND 1MEG \n", 
+        "    C0 OUT GND 50.0f \n",  
+        ".ends ts_c_p_11 \n"],
+        12: [".subckt ts_c_p_12 GND IN OUT \n", "    C1 IN OUT ? \n", 
+        "    G0 OUT GND IN GND ? \n", "    R0 OUT GND 1MEG \n",
+        "    C0 OUT GND 50.0f \n",
+        ".ends ts_c_p_12 \n"],
+        13: [".subckt ts_c_p_13 GND IN OUT \n", "    C1 IN OUT ? \n", 
+        "    G0 OUT GND IN GND ? \n", "    R0 OUT GND 1MEG \n", 
+        "    C0 OUT GND 50.0f \n",     
+        ".ends ts_c_p_13 \n"],
+        14: [".subckt ts_r_p_14 GND IN OUT \n", "    R1 IN OUT ? \n", 
+        "    G0 OUT GND IN GND ? \n", "    R0 OUT GND 1MEG \n",
+        "    C0 OUT GND 50.0f \n",
+        ".ends ts_r_p_14 \n"],
+        15: [".subckt ts_r_p_15 GND IN OUT \n", "    R1 IN OUT ? \n", 
+        "    G0 OUT GND IN GND ? \n", "    R0 OUT GND 1MEG \n", 
+        "    C0 OUT GND 50.0f \n",     
+        ".ends ts_r_p_15 \n"],
+        16: [".subckt ts_r_p_16 GND IN OUT \n", "    R1 IN OUT ? \n", 
+        "    G0 OUT GND IN GND ? \n", "    R0 OUT GND 1MEG \n",
+        "    C0 OUT GND 50.0f \n",     
+        ".ends ts_r_p_16 \n"],
+        17: [".subckt ts_r_p_17 GND IN OUT \n", "    R1 IN OUT ? \n", 
+        "    G0 OUT GND IN GND ? \n", "    R0 OUT GND 1MEG \n", 
+        "    C0 OUT GND 50.0f \n",     
+        ".ends ts_r_p_17 \n"],
+        18: [".subckt ts_r_c_p_18 GND IN OUT \n", "    C1 IN OUT ? \n",
+        "    R1 IN OUT ? \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n", 
+        ".ends ts_r_c_p_18 \n"],
+        19: [".subckt ts_r_c_p_19 GND IN OUT \n", "    C1 IN OUT ? \n",
+        "    R1 IN OUT ? \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n", 
+        ".ends ts_r_c_p_19 \n"],
+        20: [".subckt ts_r_c_p_20 GND IN OUT \n", "    C1 IN OUT ? \n",
+        "    R1 IN OUT ? \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n", 
+        ".ends ts_r_c_p_20 \n"],
+        21: [".subckt ts_r_c_p_21 GND IN OUT \n", "    C1 IN OUT ? \n",
+        "    R1 IN OUT ? \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n", 
+        ".ends ts_r_c_p_21 \n"],
+        22: [".subckt ts_r_c_s_22 GND IN OUT \n", "    C1 net1 OUT ? \n",
+        "    R1 IN net1 ? \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n",  
+        ".ends ts_r_c_s_22 \n"],
+        23: [".subckt ts_r_c_s_23 GND IN OUT \n", "  C1 net1 OUT ? \n",
+        "  R1 IN net1 ? \n", "  G0 OUT GND IN GND ? \n",
+        "  R0 OUT GND 1MEG \n", "  C0 OUT GND 50.0f \n",  
+        ".ends ts_r_c_s_23 \n"],
+        24: [".subckt ts_r_c_s_24 GND IN OUT \n", "    C1 net1 OUT ? \n",
+        "    R1 IN net1 ? \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n",  
+        ".ends ts_r_c_s_24 \n"],
+        25: [".subckt ts_r_c_s_25 GND IN OUT \n", "    C1 net1 OUT ? \n",
+        "    R1 IN net1 ? \n", "    G0 OUT GND IN GND ? \n",
+        "    R0 OUT GND 1MEG \n", "    C0 OUT GND 50.0f \n",  
+        ".ends ts_r_c_s_25 \n"]
     }
 
     ##### subnetlists ara corrected #####
@@ -295,7 +300,6 @@ def cktgraph_to_fom(cktgrpah_path):
     row_start = 0
     node_start = 0
     current_circuit_start_point = 0
-
 
 
     while row_start < number_row_text:
@@ -472,6 +476,8 @@ def cktgraph_to_fom(cktgrpah_path):
                     if '=' in part_net_list[-1]:
                         # print('true')
                         inter_v = part_net_list[-1].replace('?', str(intermedaite_updated_value_polarity) + unit_node[converted_num_index_0][s_var_numb_s_point])
+                    else:
+                        inter_v = part_net_list[-1].replace('?', str(intermedaite_updated_value_polarity) + unit_node[converted_num_index_0][s_var_numb_s_point])
 
                     ##### update the netlist of the subgraph with trained parameter #####    
                     part_net_list[-1] = inter_v
@@ -570,10 +576,7 @@ def cktgraph_to_fom(cktgrpah_path):
             version = get_next(dirname)
             file1 = open(f'{dirname}/{version}.ckt', 'w')
             #print('\n')
-            file1.writelines('\n') 
-            file1.writelines('// Library name: GNN_Circuit \n') 
-            file1.writelines('// Cell name: behavioral_op_amp \n') 
-            file1.writelines('// View name: schematic \n') 
+            file1.writelines('* GNN_Circuit \n')  
 
 
             ##### write the netlist of each instance #####
@@ -587,12 +590,8 @@ def cktgraph_to_fom(cktgrpah_path):
 
             #############################################
 
-            file1.writelines('// Library name: GNN_Circuit \n') 
-            file1.writelines('// Cell name: behavioral_op_amp_test \n') 
-            file1.writelines('// View name: schematic \n') 
-
             #print(subcircuit_node_name_new_dic)
-
+            assert list(circuit_netlist_dic) == list(subcircuit_node_name_new_dic)
             ##### write the connect of each instance #####
             for key, value in subcircuit_node_name_new_dic.items():
 
@@ -603,11 +602,19 @@ def cktgraph_to_fom(cktgrpah_path):
 
                         L1 = L1.replace('net1', 'OUT') 
 
-                    L2 = 'I' + str(key - 2) + ' ' +  '('+ L1 +')' + ' ' + subcircuit_name_new_dic[key] + str('\n')
+                    # # transform L1 into the form ahkab likes
+                    netlist_val = circuit_netlist_dic[key][0]
+                    netlist_val = netlist_val.rstrip(' \n')
+                    netlist_val_list = netlist_val.split()
+                    index = netlist_val_list.index(subcircuit_name_new_dic[key])
+                    assert len(netlist_val_list[index+1:]) == len(L1.split())
+                    L1 = [f"{k}={v}" for k, v in zip(netlist_val_list[index+1:], L1.split())]
+                    L1 = ' '.join(L1)
+                    L2 = 'X' + str(key - 2) + ' ' + 'name=' + subcircuit_name_new_dic[key] + ' ' + L1 + str('\n')
                     file1.writelines(L2)
 
             ##############################################
-            file1.writelines('V0 (net2 0) vsource dc=0 mag=1m type=sine ampl=1m freq=1K \n')
+            file1.writelines('V0 net2 0 type=vdc vdc=0 type=vac vac=1m type=sin vo=0 va=1m freq=1k \n')
             file1.writelines('\n')
             file1.close()
             ##############################################
@@ -615,86 +622,145 @@ def cktgraph_to_fom(cktgrpah_path):
             ##############################################
 
 
-            ##### call cadence for simulation #####      
-            os.system('ocean -nograph -replay test.ocn -log opamp.log')
+        #     ##### call cadence for simulation #####      
+        #     # os.system('ocean -nograph -replay test.ocn -log opamp.log')
+        #     breakpoint()
 
+        #     inter_result = ' '
 
-            inter_result = ' '
+        #     with open('results.csv', 'r') as csvfile:
+        #         csv_reader = csv.reader(csvfile)
+        #         for row in csv_reader:
+        #             inter_result += ' '.join(row)
 
-            with open('results.csv', 'r') as csvfile:
-                csv_reader = csv.reader(csvfile)
-                for row in csv_reader:
-                    inter_result += ' '.join(row)
+        #     metric = ' '.join(inter_result.split())
 
-            metric = ' '.join(inter_result.split())
+        #     if 'G' in metric:
 
-            if 'G' in metric:
+        #         metric = metric.replace('G', 'e9')
 
-                metric = metric.replace('G', 'e9')
+        #     if 'M' in metric:
 
-            if 'M' in metric:
+        #         metric = metric.replace('M', 'e6')
 
-                metric = metric.replace('M', 'e6')
+        #     if 'm' in metric:
 
-            if 'm' in metric:
+        #         metric = metric.replace('m', 'e-3')
 
-                metric = metric.replace('m', 'e-3')
+        #     if 'u' in metric:
 
-            if 'u' in metric:
+        #         metric = metric.replace('u', 'e-6')
 
-                metric = metric.replace('u', 'e-6')
+        #     if 'n' in metric:
 
-            if 'n' in metric:
+        #         metric = metric.replace('n', 'e-9')
 
-                metric = metric.replace('n', 'e-9')
+        #     if 'p' in metric:
 
-            if 'p' in metric:
+        #         metric = metric.replace('p', 'e-12')
 
-                metric = metric.replace('p', 'e-12')
+        #     if 'f' in metric:
 
-            if 'f' in metric:
+        #         metric = metric.replace('f', 'e-15')
 
-                metric = metric.replace('f', 'e-15')
+        #     if 'K' in metric:
 
-            if 'K' in metric:
+        #         metric = metric.replace('K', 'e3')
 
-                metric = metric.replace('K', 'e3')
+        #     metric = metric.split(' ')
+        #     #print(metric)
 
-            metric = metric.split(' ')
-            #print(metric)
+        #     if len(metric) == 3:
 
-            if len(metric) == 3:
+        #         gain = float(metric[0])
+        #         pm = float(metric[1])
+        #         ugw = float(metric[2])
+        #         fom = 1.2 * np.abs(gain) / 100 + 1.6 * pm / (-90) + 10 * np.abs(ugw) / 1e9
 
-                gain = float(metric[0])
-                pm = float(metric[1])
-                ugw = float(metric[2])
-                fom = 1.2 * np.abs(gain) / 100 + 1.6 * pm / (-90) + 10 * np.abs(ugw) / 1e9
+        #         #print(len(metric))
+        #         #print(metric)
+        #         #print(gain, pm, ugw)
+        #         #print(fom)
 
-                #print(len(metric))
-                #print(metric)
-                #print(gain, pm, ugw)
-                #print(fom)
-
-            else:
+        #     else:
             
-                fom = float('-inf')
+        #         fom = float('-inf')
 
-            metric.clear()
-            #print(metric)
-            os.remove('results.csv')
+        #     metric.clear()
+        #     #print(metric)
+        #     os.remove('results.csv')
 
-            #######################################
+        #     #######################################
+
+
+            # ###################################################
+
+            ##### call ahkab for simulation #####      
+            filename = f'{dirname}/{version}.ckt'
+            read_netlist_from_stdin = (filename is None or filename == "-")
+            (circ, directives, postproc_direct) = netlist_parser.parse_circuit(
+                filename, read_netlist_from_stdin)
+            start = 2 * np.pi * 1  # 1 Hz in rad/s
+            stop = 2 * np.pi * 100e9  # 100 GHz in rad/s
+            # op_analysis = ahkab.new_op(verbose=6)
+            ac_analysis = ahkab.new_ac(start=start, stop=stop, points=100, verbose=6)
+            r = ahkab.run(circ, an_list=[ac_analysis])
+
+            ac_res = r['ac']
+            f = ac_res['f']
+            Vout = ac_res['Vout']
+            
+            
+            # vac is 1m, so the input AC voltage amplitude is 1mV
+            vac = 1e-3
+
+            # Gain: Gain at first frequency (make sure very small)
+            # UGW: At what frequency gain becomes 1
+            # PM: Degrees vs frequency plot
+            # At unity gain frequency, X (in [-360, 0] degrees) difference with -180; in cadence, 180+X
+
+            # Calculate the gain
+            gain_db = 20 * np.log10(np.abs(Vout / vac))
+            gain = gain_db[0]
+
+            cond_where = np.where(np.abs(Vout / vac) <= 1)[0]
+            if len(cond_where) == 0:
+                fom = 0.
+            else:
+
+                # Calculate the UGM
+                index = cond_where[0]
+                ugw = f[index]
+
+                # Calculate the phase in degrees
+                phase_deg = np.angle(Vout, deg=True)
+
+                # Calculate the phase margin
+                index = cond_where[0]
+                pm = phase_deg[index] + 180            
+
+
+                fom = 1.2 * np.abs(gain) / 100 + 1.6 * pm / (-90) + 10 * np.abs(ugw) / 1e9
+            breakpoint()
+            foms.append(fom)
 
         row_start += 1
 
-        ###################################################
-
-    return fom
+    return foms
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--fname")
     args = parser.parse_args()
-    breakpoint()
-    cktgraph_to_fom(args.fname)
+    foms = cktgraph_to_fom(args.fname)
+    # plot distribution
+    fig, ax = plt.subplots()
+    bins = np.linspace(0, 350, 8)    
+    path = Path(args.fname).with_suffix('.png')    
+    df = pd.read_csv('/Users/msun415/Documents/GitHub/CktGNN/OCB/CktBench101/perform101.csv')
+    ax.hist([foms, df['fom']], bins=bins, label=['generated', 'ckt bench 101'])
+    ax.set_xlabel('FOM')
+    ax.set_ylabel('count')
+    ax.legend()
+    fig.savefig(path)

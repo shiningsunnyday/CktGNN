@@ -141,8 +141,7 @@ txt_name2= os.path.join(args.data_dir, args.data_name + '_conti.txt')
 if args.node_feat == 'discrete':
     if os.path.isfile(txt_name1):
         pass
-    else:
-        breakpoint()
+    else:        
         circuit_generation_dis(args.ng, SUBG_NODE, SUBG_CON, NODE_TYPE, start_type=2, end_type=26, dataset=txt_name1)
 else:
     if os.path.isfile(txt_name2):

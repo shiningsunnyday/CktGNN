@@ -15,7 +15,7 @@ def circuit_generation(num_graphs, subg_node, sung_con, node_type, start_type=2,
     pbar = tqdm(range(num_graphs))
     k_total = 0
     with open(dataset, 'w') as f:
-        for cir in pbar:
+        for cir in pbar:            
             if k_total%K == 0:
                 indicator = [1] * 2 + [0] * 6
                 subg_list = []
@@ -436,7 +436,7 @@ def circuit_generation(num_graphs, subg_node, sung_con, node_type, start_type=2,
 def circuit_generation_dis(num_graphs, subg_node, sung_con, node_type, start_type=2, end_type=26, dataset='circuit', K=20):
     print('generating circuits')
     pbar = tqdm(range(num_graphs))
-    k_total = 0
+    k_total = 0    
     with open(dataset, 'w') as f:
         for cir in pbar:
             if k_total % K == 0:

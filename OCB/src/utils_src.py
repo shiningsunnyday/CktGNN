@@ -141,7 +141,7 @@ def compute_num_nodes(subg_list, subg_node):
     return np.sum([len(subg_node[i]) for i in subg_list])
 
 def val_generator(min_val=0, max_val=1001, scale=10, size=5):
-    return np.random.randint(low=min_val, high=max_val, size=size)/np.float(scale)
+    return np.random.randint(low=min_val, high=max_val, size=size)/float(scale)
 
 def subg_flaten_adj(num_node, con_type = 'series'):
     if num_node == 1:
