@@ -294,10 +294,11 @@ def circuit_generation(num_graphs, subg_node, sung_con, node_type, start_type=2,
             SUB_FEAT = {}
             ### [subg type,  index, position , number edges (as end), predecessive ind, 
             # nodes in subg, nodes' feature in sub, nodes' type in sub, flatten adj]
+            breakpoint()
             for i in range(num_subg):
                 sub_inform = []
                 if i == 0:
-                    sub_inform = [0, i, 0, 0, 0, 1, 8, 0, 1] 
+                    sub_inform = [0, i, 0, 0, 0, 1, 8, 0, 1]
                     sub_feats = [-1,0, -1]
                 elif i == 1:
                     subg_t = subg_list[1]
@@ -708,6 +709,7 @@ def circuit_generation_dis(num_graphs, subg_node, sung_con, node_type, start_typ
             SUB_FEAT = {}
             ### [subg type,  index, position , number edges (as end), predecessive ind, 
             # nodes in subg, nodes' feature in sub, nodes' type in sub, flatten adj]
+            breakpoint()
             for i in range(num_subg):
                 sub_inform = []
                 if i == 0:

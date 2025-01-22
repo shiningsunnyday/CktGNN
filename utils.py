@@ -148,7 +148,7 @@ def is_valid_DAG(g, subg=True):
         START_TYPE=0
         END_TYPE=1
     else:
-        START_TYPE=8 
+        START_TYPE=8
         END_TYPE=9
     res = g.is_dag()
     #return res

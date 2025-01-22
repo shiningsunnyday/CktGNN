@@ -24,6 +24,7 @@ def bo_expected_improvement_search(embedding_path, total_rounds, save_path, init
     visited = {}
     best_trace = defaultdict(list)
     features, valid_foms = load(embedding_path)
+    breakpoint()
     feat_samples, valid_fom_samples, visited = get_samples(features, valid_foms, visited, init_size)
 
     for feat, fom in zip(feat_samples, valid_fom_samples):

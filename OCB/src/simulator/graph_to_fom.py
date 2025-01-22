@@ -287,7 +287,6 @@ def cktgraph_to_fom(cktgrpah_path):
     current_circuit_start_point = 0
 
 
-
     while row_start < number_row_text:
 
         ##### each element in a list is a string, split is used to sperate this string into a list ######
@@ -604,7 +603,7 @@ def cktgraph_to_fom(cktgrpah_path):
 
             ##############################################
 
-
+            breakpoint()
             ##### call cadence for simulation #####      
             os.system('ocean -nograph -replay test.ocn -log opamp.log')
 
@@ -663,7 +662,7 @@ def cktgraph_to_fom(cktgrpah_path):
                 #print(len(metric))
                 #print(metric)
                 #print(gain, pm, ugw)
-                #print(fom)
+                print(fom)
 
             else:
             
@@ -686,5 +685,4 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--fname")
     args = parser.parse_args()
-    breakpoint()
     cktgraph_to_fom(args.fname)
